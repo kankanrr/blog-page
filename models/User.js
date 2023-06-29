@@ -11,6 +11,8 @@ class User extends Model {
   }
 }
 
+// init
+
 User.init(
   {
     id: {
@@ -54,4 +56,5 @@ User.init(
   }
 );
 
+// export
 module.exports = User;

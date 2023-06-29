@@ -45,4 +45,5 @@ Comment.init(
   }
 );
 
+// export
 module.exports = Comment;
