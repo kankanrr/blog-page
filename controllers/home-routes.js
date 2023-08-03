@@ -1,12 +1,11 @@
-// vars
 const router = require("express").Router();
 const { Post, User, Comment } = require("../models");
 const sequelize = require("../config/connection");
 
-// post route
+// Get all posts ('/')
 router.get("/", async (req, res) => {
   try {
-    // get post from our database
+    // Retrieve all posts from db
     const dbPostData = await Post.findAll({
       attributes: ["id", "title", "content", "created_at"],
       include: [
@@ -25,7 +24,7 @@ router.get("/", async (req, res) => {
       ],
       order: [["created_at", "DESC"]],
     });
-    // serialize data
+    // Serialize data retrieved
     const posts = dbPostData.map((post) => post.get({ plain: true }));
     console.log(posts);
     res.render("homepage", {
@@ -39,7 +38,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-// get post by id route
+// Get single post ('/post/:id')
 router.get("/post/:id", async (req, res) => {
   try {
     const dbPostData = await Post.findOne({
@@ -77,7 +76,7 @@ router.get("/post/:id", async (req, res) => {
   }
 });
 
-// login route
+// Login
 router.get("/login", (req, res) => {
   if (req.session.loggedIn) {
     res.redirect("/");
@@ -86,7 +85,7 @@ router.get("/login", (req, res) => {
   res.render("login");
 });
 
-// sign up route
+// Signup
 router.get("/signup", async (req, res) => {
   res.render("signup");
 });

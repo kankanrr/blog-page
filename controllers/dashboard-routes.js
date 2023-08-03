@@ -1,12 +1,10 @@
-// vars
 const router = require("express").Router();
 const { User, Post, Comment } = require("../models");
-const userAuth = require("../utils/auth.js");
-const sequelize = require("../config/connection.js");
+const withAuth = require("../utils/auth");
+const sequelize = require("../config/connection");
 
-// post route
-
-router.get("/", userAuth, (req, res) => {
+// User's all posts ('/dashboard')
+router.get("/", withAuth, (req, res) => {
   Post.findAll({
     where: {
       userId: req.session.userId,
@@ -42,8 +40,8 @@ router.get("/", userAuth, (req, res) => {
     });
 });
 
-// get route
-router.get("/edit/:id", userAuth, (req, res) => {
+// Get one post to edit ('dashboard/edit/:id')
+router.get("/edit/:id", withAuth, (req, res) => {
   Post.findOne({
     where: {
       id: req.params.id,
@@ -66,7 +64,7 @@ router.get("/edit/:id", userAuth, (req, res) => {
   })
     .then((dbPostData) => {
       if (!dbPostData) {
-        res.status(404).json({ message: "Invalid post id." });
+        res.status(404).json({ message: "This id has no post." });
         return;
       }
       const post = dbPostData.get({ plain: true });
@@ -82,8 +80,8 @@ router.get("/edit/:id", userAuth, (req, res) => {
     });
 });
 
-// get new post
-router.get("/new", userAuth, (req, res) => {
+//  Get new post ('/dashboard/new)
+router.get("/new", withAuth, (req, res) => {
   res.render("new-post", { username: req.session.username });
 });
 

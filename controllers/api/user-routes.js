@@ -1,9 +1,8 @@
-// vars
 const router = require("express").Router();
 const { User } = require("../../models");
 const withAuth = require("../../utils/auth");
 
-// post route to create new user
+// CREATE user /api/user
 router.post("/", async (req, res) => {
   try {
     const dbUserData = await User.create(req.body);
@@ -20,7 +19,7 @@ router.post("/", async (req, res) => {
   }
 });
 
-// post route for login
+// POST for user login /api/user/login
 router.post("/login", async (req, res) => {
   try {
     const dbUserData = await User.findOne({
@@ -30,7 +29,7 @@ router.post("/login", async (req, res) => {
       res.status(400).json({ message: `User id ${req.params.id} not valid.` });
       return;
     }
-    // pass validation
+    // check the password
     const pwValidated = await dbUserData.checkPassword(req.body.password);
     if (!pwValidated) {
       res.status(400).json({ message: "Password incorrect" });
@@ -47,10 +46,11 @@ router.post("/login", async (req, res) => {
   }
 });
 
-// post route to logout
+// POST for logging out /api/user/logout
 router.post("/logout", withAuth, async (req, res) => {
   try {
     if (req.session.loggedIn) {
+      //destroy the session
       const dbUserData = await req.session.destroy(() => {
         res.status(204).end();
       });
@@ -62,5 +62,4 @@ router.post("/logout", withAuth, async (req, res) => {
   }
 });
 
-// export
 module.exports = router;
